@@ -19,10 +19,11 @@ test.describe("foods.html", function() {
     driver.get('http://localhost:8080/foods.html');
     var calories = driver.findElement({name: 'calories'});
     var submit = driver.findElement({id: 'add-food-btn'});
-    var nameWarning = driver.findElement({id: 'name-warning'});
 
     calories.sendKeys('150');
     submit.click();
+
+    var nameWarning = driver.findElement({css: '.name-err'});
 
     nameWarning.getText().then(function(value) {
       assert.equal(value, 'Please enter a food name.');
