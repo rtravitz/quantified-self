@@ -15,6 +15,36 @@ test.describe("exercises.html", function() {
     driver.quit();
   });
 
+  test.it("requires a name to create a new exercise", function() {
+    driver.get('http://localhost:8080/exercises.html');
+    var calories = driver.findElement({name: 'calories'});
+    var submit = driver.findElement({id: 'add-exercise-btn'});
+
+    calories.sendKeys('150');
+    submit.click();
+
+    var nameWarning = driver.findElement({css: '.name-err'});
+
+    nameWarning.getText().then(function(value) {
+      assert.equal(value, 'Please enter an exercise name.');
+    });
+  });
+
+  test.it("requires a calories to create a new exercise", function() {
+    driver.get('http://localhost:8080/exercises.html');
+    var name = driver.findElement({name: 'name'});
+    var submit = driver.findElement({id: 'add-exercise-btn'});
+
+    name.sendKeys('running');
+    submit.click();
+
+    var caloriesWarning = driver.findElement({css: '.calories-err'});
+
+    caloriesWarning.getText().then(function(value) {
+      assert.equal(value, 'Please enter a calorie amount.');
+    });
+  });
+
   test.it("user can create a new exercise with a name and calories", function() {
     driver.get('http://localhost:8080/exercises.html');
     var name = driver.findElement({name: 'name'});
@@ -25,24 +55,14 @@ test.describe("exercises.html", function() {
     calories.sendKeys('500');
     submit.click();
 
-    driver.findElement({id: 'exercise-table'}).then(function(table) {
-      table.findElements(webdriver.By.css('tr')).then(function(rows) {
-        assert.equal(rows.length, 2);
-
-        rows[1].findElement(webdriver.By.className('name-cell'))
-          .getText().then(function(exerciseName) {
-            assert.equal(exerciseName, 'running');
-        });
-
-        rows[1].findElement(webdriver.By.className('calories-cell'))
-          .getText().then(function(exerciseCalories) {
-            assert.equal(exerciseCalories, '500');
-        });
-      });
+    driver.findElement({css: '.exercise-table tbody tr td:nth-of-type(1)'})
+    .getText().then(function(exerciseName) {
+      assert.equal(exerciseName, 'running');
     });
 
-    driver.executeScript('return window.localStorage["exercises"]').then(function(storedExercises) {
-      assert.equal(storedExercises, '[{"name":"running","calories":"500"}]');
+    driver.findElement({css: '.exercise-table tbody tr td:nth-of-type(2)'})
+    .getText().then(function(exerciseCalories) {
+      assert.equal(exerciseCalories, '500');
     });
   });
 });

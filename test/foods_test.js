@@ -15,7 +15,37 @@ test.describe("foods.html", function() {
     driver.quit();
   });
 
-  test.it("user can create a new food with a name and calories", function() {
+  test.it("requires a name to create a new food", function() {
+    driver.get('http://localhost:8080/foods.html');
+    var calories = driver.findElement({name: 'calories'});
+    var submit = driver.findElement({id: 'add-food-btn'});
+
+    calories.sendKeys('150');
+    submit.click();
+
+    var nameWarning = driver.findElement({css: '.name-err'});
+
+    nameWarning.getText().then(function(value) {
+      assert.equal(value, 'Please enter a food name.');
+    });
+  });
+
+  test.it("requires a calories to create a new food", function() {
+    driver.get('http://localhost:8080/foods.html');
+    var name = driver.findElement({name: 'name'});
+    var submit = driver.findElement({id: 'add-food-btn'});
+
+    name.sendKeys('yogurt');
+    submit.click();
+
+    var caloriesWarning = driver.findElement({css: '.calories-err'});
+
+    caloriesWarning.getText().then(function(value) {
+      assert.equal(value, 'Please enter a calorie amount.');
+    });
+  });
+
+  test.it("user can create a new food", function() {
     driver.get('http://localhost:8080/foods.html');
     var name = driver.findElement({name: 'name'});
     var calories = driver.findElement({name: 'calories'});
@@ -25,24 +55,14 @@ test.describe("foods.html", function() {
     calories.sendKeys('150');
     submit.click();
 
-    driver.findElement({id: 'food-table'}).then(function(table) {
-      table.findElements(webdriver.By.css('tr')).then(function(rows) {
-        assert.equal(rows.length, 2);
-
-        rows[1].findElement(webdriver.By.className('name-cell'))
-          .getText().then(function(foodName) {
-            assert.equal(foodName, 'apple');
-        });
-
-        rows[1].findElement(webdriver.By.className('calories-cell'))
-          .getText().then(function(foodCalories) {
-            assert.equal(foodCalories, '150');
-        });
-      });
+    driver.findElement({css: '.food-table tbody tr td:nth-of-type(1)'})
+    .getText().then(function(foodName) {
+      assert.equal(foodName, 'apple');
     });
 
-    driver.executeScript('return window.localStorage["foods"]').then(function(storedFoods) {
-      assert.equal(storedFoods, '[{"name":"apple","calories":"150"}]');
+    driver.findElement({css: '.food-table tbody tr td:nth-of-type(2)'})
+    .getText().then(function(foodCalories) {
+      assert.equal(foodCalories, '150');
     });
   });
 });
