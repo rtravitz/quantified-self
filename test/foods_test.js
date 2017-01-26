@@ -15,6 +15,20 @@ test.describe("foods.html", function() {
     driver.quit();
   });
 
+  test.it("requires a name to create a new food", function() {
+    driver.get('http://localhost:8080/foods.html');
+    var calories = driver.findElement({name: 'calories'});
+    var submit = driver.findElement({id: 'add-food-btn'});
+    var nameWarning = driver.findElement({id: 'name-warning'});
+
+    calories.sendKeys('150');
+    submit.click();
+
+    nameWarning.getText().then(function(value) {
+      assert.equal(value, 'Please enter a food name.');
+    });
+  });
+
   test.it("user can create a new food", function() {
     driver.get('http://localhost:8080/foods.html');
     var name = driver.findElement({name: 'name'});
