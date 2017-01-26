@@ -15,6 +15,36 @@ test.describe("exercises.html", function() {
     driver.quit();
   });
 
+  test.it("requires a name to create a new exercise", function() {
+    driver.get('http://localhost:8080/exercises.html');
+    var calories = driver.findElement({name: 'calories'});
+    var submit = driver.findElement({id: 'add-exercise-btn'});
+
+    calories.sendKeys('150');
+    submit.click();
+
+    var nameWarning = driver.findElement({css: '.name-err'});
+
+    nameWarning.getText().then(function(value) {
+      assert.equal(value, 'Please enter an exercise name.');
+    });
+  });
+
+  test.it("requires a calories to create a new exercise", function() {
+    driver.get('http://localhost:8080/exercises.html');
+    var name = driver.findElement({name: 'name'});
+    var submit = driver.findElement({id: 'add-exercise-btn'});
+
+    name.sendKeys('running');
+    submit.click();
+
+    var caloriesWarning = driver.findElement({css: '.calories-err'});
+
+    caloriesWarning.getText().then(function(value) {
+      assert.equal(value, 'Please enter a calorie amount.');
+    });
+  });
+
   test.it("user can create a new exercise with a name and calories", function() {
     driver.get('http://localhost:8080/exercises.html');
     var name = driver.findElement({name: 'name'});
