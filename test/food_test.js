@@ -1,5 +1,5 @@
-assert        = require('chai').assert;
-Food          = require('../lib/food');
+assert  = require('chai').assert;
+Food    = require('../lib/food');
 
 describe("Food", function() {
   it("has a name and calories", function() {
