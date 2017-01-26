@@ -30,6 +30,21 @@ test.describe("foods.html", function() {
     });
   });
 
+  test.it("requires a calories to create a new food", function() {
+    driver.get('http://localhost:8080/foods.html');
+    var name = driver.findElement({name: 'name'});
+    var submit = driver.findElement({id: 'add-food-btn'});
+
+    name.sendKeys('yogurt');
+    submit.click();
+
+    var caloriesWarning = driver.findElement({css: '.calories-err'});
+
+    caloriesWarning.getText().then(function(value) {
+      assert.equal(value, 'Please enter a calorie amount.');
+    });
+  });
+
   test.it("user can create a new food", function() {
     driver.get('http://localhost:8080/foods.html');
     var name = driver.findElement({name: 'name'});
