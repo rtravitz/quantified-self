@@ -25,24 +25,14 @@ test.describe("exercises.html", function() {
     calories.sendKeys('500');
     submit.click();
 
-    driver.findElement({id: 'exercise-table'}).then(function(table) {
-      table.findElements(webdriver.By.css('tr')).then(function(rows) {
-        assert.equal(rows.length, 2);
-
-        rows[1].findElement(webdriver.By.className('name-cell'))
-          .getText().then(function(exerciseName) {
-            assert.equal(exerciseName, 'running');
-        });
-
-        rows[1].findElement(webdriver.By.className('calories-cell'))
-          .getText().then(function(exerciseCalories) {
-            assert.equal(exerciseCalories, '500');
-        });
-      });
+    driver.findElement({css: '.exercise-table tbody tr td:nth-of-type(1)'})
+    .getText().then(function(exerciseName) {
+      assert.equal(exerciseName, 'running');
     });
 
-    driver.executeScript('return window.localStorage["exercises"]').then(function(storedExercises) {
-      assert.equal(storedExercises, '[{"name":"running","calories":"500"}]');
+    driver.findElement({css: '.exercise-table tbody tr td:nth-of-type(2)'})
+    .getText().then(function(exerciseCalories) {
+      assert.equal(exerciseCalories, '500');
     });
   });
 });
